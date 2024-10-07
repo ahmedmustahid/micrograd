@@ -62,6 +62,23 @@ class Value:
     def __sub__(self, other):
         return self + (-other)
     
+    def tanh(self):
+        n = self.data
+        t = (math.exp(2*n) - 1)/(math.exp(2*n) + 1)
+        out = Value(t,children=(self,), _op="tanh")
+        def _backward():
+            self.grad += (1 - t**2)*out.grad
+        out._backward = _backward
+        return out
+    
+    def exp(self):
+        out = Value(data=math.exp(self.data), children=(self,), _op="exp")
+
+        def _backward():
+            self.grad += out.data * out.grad
+        self._backward = _backward
+        return out
+    
     def backward(self):
         topo = []
         visited = set()

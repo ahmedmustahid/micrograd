@@ -92,3 +92,38 @@ def test_grad():
     xtgrad = x.grad.item()
 
     assert xgrad==xtgrad
+
+def test_tanh():
+    x = Value(-4.0)
+    z = 2 * x + 2 + x
+    q = z.tanh() + z * x
+    q.backward()
+    xgrad = x.grad
+
+
+    x = torch.Tensor([-4.0]).double()
+    x.requires_grad = True
+    z = 2 * x + 2 + x
+    q = z.tanh() + z * x
+    q.backward()
+    xtgrad = x.grad.item()
+
+    assert (xgrad - xtgrad) < 1e-6
+
+def test_tanh_exp():
+    x = Value(-4.0)
+    z = 2 * x + 2 + x
+    q = ((2*z).exp()-1)/((2*z).exp()+1) + z * x
+    q.backward()
+    xgrad = x.grad
+
+
+    x = torch.Tensor([-4.0]).double()
+    x.requires_grad = True
+    z = 2 * x + 2 + x
+    # q = z.tanh() + z * x
+    q = ((2*z).exp()-1)/((2*z).exp()+1) + z * x
+    q.backward()
+    xtgrad = x.grad.item()
+
+    assert (xgrad - xtgrad) < 1e-6
