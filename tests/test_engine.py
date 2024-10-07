@@ -126,4 +126,4 @@ def test_tanh_exp():
     q.backward()
     xtgrad = x.grad.item()
 
-    assert (xgrad - xtgrad) < 1e-6
+    assert abs(xgrad - xtgrad) < 1e-6
